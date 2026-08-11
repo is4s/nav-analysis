@@ -6,9 +6,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from navanalysis.lcm.data import LogData, VelData
 from navanalysis.lcm.log_readers import read_vel
+from navanalysis.lcm.plots.utils import save_or_show
 
 
-def plot_vel(log_data: LogData[VelData]) -> None:
+def plot_vel(log_data: LogData[VelData], save_dir=None) -> None:
     vel_data = log_data.data
     t0 = log_data.t0
     truth_channel = log_data.truth_channel
@@ -67,7 +68,7 @@ def plot_vel(log_data: LogData[VelData]) -> None:
         plt.legend()
         plt.tight_layout()
 
-    plt.show()
+    save_or_show(save_dir)
 
 
 def main():
@@ -82,10 +83,22 @@ def main():
         help='Plot all velocity messages in log. If not set, will prompt user to determine which velocity channels should be plotted.',
         action='store_true',
     )
+    parser.add_argument(
+        '-s',
+        '--save',
+        nargs='?',
+        const='.',
+        default=None,
+        metavar='DIR',
+        help=(
+            'Save plots as PNG files instead of showing them interactively. '
+            'Optionally provide a directory to save into (default: current directory).'
+        ),
+    )
 
     args = parser.parse_args()
     log_data = read_vel(args.logfile, args.all)
-    plot_vel(log_data)
+    plot_vel(log_data, save_dir=args.save)
 
 
 if __name__ == '__main__':

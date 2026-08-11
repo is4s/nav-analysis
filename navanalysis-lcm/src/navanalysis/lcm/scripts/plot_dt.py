@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 
+import argparse
+import os
 import sys
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 from aspn23_xtensor import TypeTimestamp, to_seconds
 from lcm import Event, EventLog
 from navanalysis.lcm.measurements import decode_aspn_lcm_msg
+from navanalysis.lcm.plots.utils import save_or_show
 from tqdm import tqdm
 
 
-def plot_dt(logfile: str) -> None:
+def plot_dt(logfile: str, save_dir=None) -> None:
     log = EventLog(logfile, 'r')
 
     times: dict[str, list[TypeTimestamp]] = {}
@@ -50,12 +54,36 @@ def plot_dt(logfile: str) -> None:
         print(f'Avg dt for {channel}: {avg_dt:.9f}s')
 
     plt.legend()
-    plt.show()
+    save_or_show(save_dir)
 
 
 def main():
-    logfile = sys.argv[1]
-    plot_dt(logfile)
+    parser = argparse.ArgumentParser(description="""Plot dt messages from LCM log.""")
+
+    parser.add_argument('logfile', help='LCM log file.')
+    parser.add_argument(
+        '-a',
+        '--all',
+        help='Plot all altitude messages in log. If not set, will prompt user to determine which altitude channels should be plotted.',
+        action='store_true',
+    )
+
+    parser.add_argument(
+        '-s',
+        '--save',
+        nargs='?',
+        const='.',
+        default=None,
+        metavar='DIR',
+        help=(
+            'Save plots as PNG files instead of showing them interactively. '
+            'Optionally provide a directory to save into (default: current directory).'
+        ),
+    )
+
+    args = parser.parse_args()
+    log_data = sys.argv[1]
+    plot_dt(log_data, save_dir=args.save)
 
 
 if __name__ == '__main__':

@@ -12,6 +12,7 @@ from navanalysis.lcm.config import CONFIG_FILE
 from navanalysis.lcm.data import MagData
 from navanalysis.lcm.log_formats import ERROR, INFO
 from navanalysis.lcm.log_readers import MagLogReader
+from navanalysis.lcm.plots.utils import save_or_show
 from navtk.magnetic import (
     MagnetometerCalibrationCaruso2d,
     MagnetometerCalibrationEllipse2d,
@@ -214,7 +215,7 @@ def calc_mag_heading(data: MagData, config: dict):
     data.heading = np.rad2deg(heading)
 
 
-def plot_mag(logfile: str, extract_all: bool, calibrate: bool) -> None:
+def plot_mag(logfile: str, extract_all: bool, calibrate: bool, save_dir=None) -> None:
     log_reader = MagLogReader(
         logfile,
         (measurement_magnetic_field,),
@@ -243,7 +244,7 @@ def plot_mag(logfile: str, extract_all: bool, calibrate: bool) -> None:
 
     finish_plots()
 
-    plt.show()
+    save_or_show(save_dir)
 
     for data in mag_data.values():
         if calibrate and data.scale_factor is not None:
@@ -268,9 +269,22 @@ def main():
         help='Calibrate magnetic field measurements before plotting. If not set, will try to use calibration parameters from config file.',
         action='store_true',
     )
+    parser.add_argument(
+        '-s',
+        '--save',
+        nargs='?',
+        const='.',
+        default=None,
+        metavar='DIR',
+        help=(
+            'Save plots as PNG files instead of showing them interactively. '
+            'Optionally provide a directory to save into (default: current directory).'
+        ),
+    )
 
     args = parser.parse_args()
-    plot_mag(args.logfile, args.all, args.calibrate)
+    args = parser.parse_args()
+    plot_mag(args.logfile, args.all, args.calibrate, args.save)
 
 
 if __name__ == '__main__':
