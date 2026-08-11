@@ -10,18 +10,13 @@ from navanalysis.lcm.error import calc_tilts
 from navanalysis.lcm.interpolation import interpolate_pva
 from navanalysis.lcm.log_readers import read_pva
 from navanalysis.lcm.plots import Plot
+from navanalysis.lcm.plots.utils import save_or_show
 
 
-def plot_pva(log_data: LogData[PvaData], save=False) -> None:
+def plot_pva(log_data: LogData[PvaData], save_dir=None) -> None:
     pva_data = log_data.data
     truth_channel = log_data.truth_channel
     t0 = log_data.t0
-
-    save_dir = None
-    if save:
-        log_dir = os.path.dirname(log_data.logfile)
-        log_name = os.path.basename(log_data.logfile).split('.')[0]
-        save_dir = os.path.join(log_dir, log_name)
 
     # Plot horizontal trajectory
     traj_plot = Plot(
@@ -174,7 +169,7 @@ def plot_pva(log_data: LogData[PvaData], save=False) -> None:
             if shared_tilt_err_plot.data:
                 shared_tilt_err_plot.plot(save_dir)
 
-    plt.show()
+    save_or_show(save_dir)
 
 
 def main():
@@ -193,10 +188,23 @@ def main():
         default=None,
         help='Channel to use as truth. Will default to whatever is stored in sensors.toml config file.',
     )
-    args = parser.parse_args()
 
+    parser.add_argument(
+        '-s',
+        '--save',
+        nargs='?',
+        const='.',
+        default=None,
+        metavar='DIR',
+        help=(
+            'Save plots as PNG files instead of showing them interactively. '
+            'Optionally provide a directory to save into (default: current directory).'
+        ),
+    )
+
+    args = parser.parse_args()
     log_data = read_pva(args.logfile, args.all, args.truth)
-    plot_pva(log_data)
+    plot_pva(log_data, save_dir=args.save)
 
 
 if __name__ == '__main__':

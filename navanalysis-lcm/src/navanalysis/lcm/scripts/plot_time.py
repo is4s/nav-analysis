@@ -7,10 +7,11 @@ import numpy as np
 from aspn23_xtensor import TypeTimestamp, to_seconds
 from lcm import Event, EventLog
 from navanalysis.lcm.measurements import decode_aspn_lcm_msg
+from navanalysis.lcm.plots.utils import save_or_show
 from tqdm import tqdm
 
 
-def plot_time(logfile: str, extract_all: bool) -> None:
+def plot_time(logfile: str, extract_all: bool, save_dir=None) -> None:
     log = EventLog(logfile, 'r')
 
     times: dict[str, list[TypeTimestamp]] = {}
@@ -67,7 +68,7 @@ def plot_time(logfile: str, extract_all: bool) -> None:
     )
     plt.tight_layout()
 
-    plt.show()
+    save_or_show(save_dir)
 
 
 def main():
@@ -81,8 +82,20 @@ def main():
         help='Plot all timestamps in log. If not set, will prompt user to determine which channels should be plotted.',
         action='store_true',
     )
+    parser.add_argument(
+        '-s',
+        '--save',
+        nargs='?',
+        const='.',
+        default=None,
+        metavar='DIR',
+        help=(
+            'Save plots as PNG files instead of showing them interactively. '
+            'Optionally provide a directory to save into (default: current directory).'
+        ),
+    )
     args = parser.parse_args()
-    plot_time(args.logfile, args.all)
+    plot_time(args.logfile, args.all, save_dir=args.save)
 
 
 if __name__ == '__main__':

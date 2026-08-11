@@ -8,11 +8,16 @@ from navanalysis.lcm.data import ImuData, LogData
 from navanalysis.lcm.interpolation import sum_imu
 from navanalysis.lcm.log_readers import read_imu
 from navanalysis.lcm.plots import Plot
+from navanalysis.lcm.plots.utils import save_or_show
 from navtk.navutils import calculate_gravity_schwartz, rpy_to_dcm
 
 
 def plot_stationary_imu(
-    log_data: LogData[ImuData], alt: float, lat_deg: float, heading_deg: float
+    log_data: LogData[ImuData],
+    alt: float,
+    lat_deg: float,
+    heading_deg: float,
+    save_dir=None,
 ) -> None:
     t0 = log_data.t0
     imu_data = log_data.data
@@ -103,7 +108,7 @@ def plot_stationary_imu(
     shared_accel_plot.plot()
     shared_gyro_plot.plot()
 
-    plt.show()
+    save_or_show(save_dir)
 
 
 def main():
@@ -113,13 +118,19 @@ def main():
 
     parser.add_argument('logfile', help='LCM log file.')
     parser.add_argument(
+        '-a',
+        '--all',
+        help='Plot all altitude messages in log. If not set, will prompt user to determine which altitude channels should be plotted.',
+        action='store_true',
+    )
+
+    parser.add_argument(
         '-l',
         '--lat',
         help='Approximate latitude of IMU in degrees, used to compute earth rate at location.',
         type=float,
     )
     parser.add_argument(
-        '-a',
         '--alt',
         help='Approximate altitude of IMU in meters, used to compute gravity at location. Defaults to 0.',
         default=0.0,
@@ -132,9 +143,22 @@ def main():
         type=float,
     )
 
+    parser.add_argument(
+        '-s',
+        '--save',
+        nargs='?',
+        const='.',
+        default=None,
+        metavar='DIR',
+        help=(
+            'Save plots as PNG files instead of showing them interactively. '
+            'Optionally provide a directory to save into (default: current directory).'
+        ),
+    )
+
     args = parser.parse_args()
-    log_data = read_imu(args.logfile, False)
-    plot_stationary_imu(log_data, args.alt, args.lat, args.yaw)
+    log_data = read_imu(args.logfile, args.all)
+    plot_stationary_imu(log_data, args.alt, args.lat, args.yaw, save_dir=args.save)
 
 
 if __name__ == '__main__':

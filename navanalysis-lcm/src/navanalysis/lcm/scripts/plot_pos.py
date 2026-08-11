@@ -8,6 +8,7 @@ from navanalysis.lcm.data import LogData, PosData
 from navanalysis.lcm.interpolation import interpolate_array
 from navanalysis.lcm.log_readers import read_pos
 from navanalysis.lcm.plots import Plot
+from navanalysis.lcm.plots.utils import save_or_show
 from scipy.interpolate import interp1d
 
 
@@ -18,7 +19,7 @@ def pressure_to_alt(pressure, deg_k=288.15):
     return alt
 
 
-def plot_pos(log_data: LogData[PosData]) -> None:
+def plot_pos(log_data: LogData[PosData], save_dir=None) -> None:
     pos_data = log_data.data
     truth_channel = log_data.truth_channel
     t0 = log_data.t0
@@ -91,7 +92,7 @@ def plot_pos(log_data: LogData[PosData]) -> None:
             err_plot.plot()
 
         shared_err.plot()
-    plt.show()
+    save_or_show(save_dir)
 
 
 def main():
@@ -106,10 +107,22 @@ def main():
         help='Plot all position messages in log. If not set, will prompt user to determine which position channels should be plotted.',
         action='store_true',
     )
+    parser.add_argument(
+        '-s',
+        '--save',
+        nargs='?',
+        const='.',
+        default=None,
+        metavar='DIR',
+        help=(
+            'Save plots as PNG files instead of showing them interactively. '
+            'Optionally provide a directory to save into (default: current directory).'
+        ),
+    )
 
     args = parser.parse_args()
     log_data = read_pos(args.logfile, args.all)
-    plot_pos(log_data)
+    plot_pos(log_data, save_dir=args.save)
 
 
 if __name__ == '__main__':
