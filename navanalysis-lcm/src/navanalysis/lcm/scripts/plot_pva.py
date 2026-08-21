@@ -124,7 +124,7 @@ def plot_pva(log_data: LogData[PvaData], save_dir=None) -> None:
             pos_err_plot.add_data(
                 'Error', data.time, -ned_sig, color='black', linestyle='--'
             )
-            pos_err_plot.plot(save_dir)
+            pos_err_plot.plot()
 
             # Individual velocity error w/ sigma plot for each channel
             vel_err_plot = Plot(
@@ -142,7 +142,7 @@ def plot_pva(log_data: LogData[PvaData], save_dir=None) -> None:
             vel_err_plot.add_data(
                 'Error', data.time, -vel_sig, color='black', linestyle='--'
             )
-            vel_err_plot.plot(save_dir)
+            vel_err_plot.plot()
 
             if tilt_error is not None:
                 # Individual tilt error w/ sigma plot for each channel
@@ -161,13 +161,13 @@ def plot_pva(log_data: LogData[PvaData], save_dir=None) -> None:
                 tilt_err_plot.add_data(
                     'Error', data.time, -tilt_sig, color='black', linestyle='--'
                 )
-                tilt_err_plot.plot(save_dir)
+                tilt_err_plot.plot()
 
         if len(shared_pos_err_plot.data) >= 2:
-            shared_pos_err_plot.plot(save_dir)
-            shared_vel_err_plot.plot(save_dir)
+            shared_pos_err_plot.plot()
+            shared_vel_err_plot.plot()
             if shared_tilt_err_plot.data:
-                shared_tilt_err_plot.plot(save_dir)
+                shared_tilt_err_plot.plot()
 
     save_or_show(save_dir)
 
