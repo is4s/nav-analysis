@@ -42,7 +42,7 @@ class Plot:
 
         self.data.append(PlotData(label, x, y, is_scatter=is_scatter, **kwargs))
 
-    def plot(self, save_dir: str | None = None):
+    def plot(self):
         num_subplots = len(self.ylabels)
         if num_subplots == 1:
             # One plot
@@ -71,8 +71,3 @@ class Plot:
         else:
             plt.legend()
         plt.tight_layout()
-
-        if save_dir is not None:
-            os.makedirs(save_dir, exist_ok=True)
-            filename = os.path.join(save_dir, self.title)
-            plt.savefig(f'{filename}.png', dpi=300)
