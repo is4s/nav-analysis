@@ -32,7 +32,7 @@ def plot_pva(log_data: LogData[PvaData], save_dir=None) -> None:
             delta_pos_steps = np.linalg.norm(np.diff(data.ned[:, :2], axis=0), axis=1)
             delta_pos = np.sum(delta_pos_steps)
             print(f'Distance Traveled: {delta_pos / 1000:.3f} km')
-    traj_plot.plot(save_dir)
+    traj_plot.plot()
 
     # Plot position vs time
     pos_plot = Plot(
@@ -63,10 +63,10 @@ def plot_pva(log_data: LogData[PvaData], save_dir=None) -> None:
             rpy_plot.add_data(
                 data.label, data.time, data.rpy.T, is_scatter=True, marker='.'
             )
-    pos_plot.plot(save_dir)
-    vel_plot.plot(save_dir)
+    pos_plot.plot()
+    vel_plot.plot()
     if rpy_plot.data:
-        rpy_plot.plot(save_dir)
+        rpy_plot.plot()
 
     if len(pva_data.keys()) > 1 and len(pva_data[truth_channel].time) > 0:
         # Plot position error vs time on one plot
