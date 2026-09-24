@@ -51,7 +51,11 @@ python-dateutil==2.9.0.post0
 pyyaml==6.0.3
     # via navanalysis-lcm
 ruff==0.15.7
-scipy==1.15.3 ; python_full_version < '3.11'
+scipy==1.14.1 ; python_full_version < '3.11' and sys_platform == 'darwin'
+    # via
+    #   inu
+    #   navanalysis-lcm
+scipy==1.15.3 ; python_full_version < '3.11' and sys_platform != 'darwin'
     # via
     #   inu
     #   navanalysis-lcm
