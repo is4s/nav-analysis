@@ -7,4 +7,5 @@ from .PosData import PosData as PosData
 from .PvaData import PvaData as PvaData
 from .RangeRateData import RangeRateData as RangeRateData
 from .SpeedData import SpeedData as SpeedData
+from .TimeData import TimeData as TimeData
 from .VelData import VelData as VelData

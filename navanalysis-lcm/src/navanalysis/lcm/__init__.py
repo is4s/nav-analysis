@@ -12,6 +12,7 @@ from .data.PosData import PosData as PosData
 from .data.PvaData import PvaData as PvaData
 from .data.RangeRateData import RangeRateData as RangeRateData
 from .data.SpeedData import SpeedData as SpeedData
+from .data.TimeData import TimeData as TimeData
 from .data.VelData import VelData as VelData
 from .error import calc_drms as calc_drms, calc_tilts as calc_tilts
 from .interpolation import (
@@ -43,9 +44,11 @@ from .log_readers.read import (
     read_pva as read_pva,
     read_range_rate_to_point as read_range_rate_to_point,
     read_speed as read_speed,
+    read_time as read_time,
     read_vel as read_vel,
 )
 from .log_readers.SpeedLogReader import SpeedLogReader as SpeedLogReader
+from .log_readers.TimeLogReader import TimeLogReader as TimeLogReader
 from .log_readers.VelLogReader import VelLogReader as VelLogReader
 from .logfiles import sort_log as sort_log
 from .measurements import (
