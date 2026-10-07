@@ -10,6 +10,7 @@ from .PosLogReader import PosLogReader
 from .PvaLogReader import PvaLogReader
 from .RangeRateLogReader import RangeRateLogReader
 from .SpeedLogReader import SpeedLogReader
+from .TimeLogReader import TimeLogReader
 from .VelLogReader import VelLogReader
 
 data_type_to_aspn_type: dict[type[DataType], tuple[Any, ...]] = {
@@ -35,6 +36,7 @@ data_type_to_aspn_type: dict[type[DataType], tuple[Any, ...]] = {
         aspn23_lcm.measurement_velocity,
         aspn23_lcm.measurement_position_velocity_attitude,
     ),
+    TimeData: (aspn23_lcm.measurement_time,),
 }
 
 
@@ -88,6 +90,17 @@ def read_pva(
         aspn_types,
         read_all,
         truth_channel=truth_channel,
+        config_file=CONFIG_FILE,
+    )
+    return log_reader.read_log()
+
+
+def read_time(logfile: str, read_all: bool) -> LogData[TimeData]:
+    aspn_types = data_type_to_aspn_type[TimeData]
+    log_reader = TimeLogReader(
+        logfile,
+        aspn_types,
+        read_all,
         config_file=CONFIG_FILE,
     )
     return log_reader.read_log()

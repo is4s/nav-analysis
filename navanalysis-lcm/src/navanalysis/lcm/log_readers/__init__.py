@@ -12,7 +12,9 @@ from .read import (
     read_pva as read_pva,
     read_range_rate_to_point as read_range_rate_to_point,
     read_speed as read_speed,
+    read_time as read_time,
     read_vel as read_vel,
 )
 from .SpeedLogReader import SpeedLogReader as SpeedLogReader
+from .TimeLogReader import TimeLogReader as TimeLogReader
 from .VelLogReader import VelLogReader as VelLogReader
